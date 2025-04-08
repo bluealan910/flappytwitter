@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flappy Twitter</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="game-container">
+            <div class="game-start-screen" id="start-screen">
+                <h1>Flappy Twitter</h1>
+                <p>Click or press Space to start</p>
+            </div>
+            <div class="game-over-screen" id="game-over-screen">
+                <h2>Game Over</h2>
+                <p>Score: <span id="final-score">0</span></p>
+                <button id="restart-button">Play Again</button>
+            </div>
+            <div class="score-display">
+                <span id="score">0</span>
+            </div>
+            <canvas id="game-canvas"></canvas>
+        </div>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>
