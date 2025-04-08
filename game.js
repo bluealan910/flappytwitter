@@ -15,10 +15,14 @@ console.log('Bird element:', bird);
 console.log('Message element:', message);
 console.log('Score value element:', scoreValue);
 
+// Ensure the game container is focused on load
+document.querySelector('.game-container').focus();
+
 // Start the game on spacebar press
 document.addEventListener('keydown', (e) => {
     console.log('Key pressed:', e.code, e.key); // Debug log
-    if (e.code === 'Space' || e.key === ' ') { // Support both e.code and e.key
+    if (e.code === 'Space' || e.key === ' ') {
+        e.preventDefault(); // Prevent spacebar from scrolling the page
         if (gameState === 'Start') {
             console.log('Starting game...');
             startGame();
@@ -39,7 +43,11 @@ function startGame() {
     score = 0;
     birdPosition = 40;
     birdVelocity = 0;
-    pipes.forEach(pipe => pipe.remove());
+    // Clear existing pipes
+    pipes.forEach(pipe => {
+        pipe.top.remove();
+        pipe.bottom.remove();
+    });
     pipes = [];
     generatePipe();
     gameLoop();
@@ -82,8 +90,14 @@ function gameLoop() {
     birdPosition += birdVelocity * 0.1;
     bird.style.top = birdPosition + 'vh';
 
-    // Move pipes
-    pipes.forEach(pipe => {
+    // Check if bird hits the top or bottom
+    if (birdPosition <= 0 || birdPosition >= 90) {
+        endGame();
+        return;
+    }
+
+    // Move pipes and check collisions
+    pipes.forEach((pipe, index) => {
         let pipeLeft = parseFloat(pipe.top.style.left) - moveSpeed;
         pipe.top.style.left = pipeLeft + '%';
         pipe.bottom.style.left = pipeLeft + '%';
@@ -92,7 +106,8 @@ function gameLoop() {
         if (pipeLeft < -10) {
             pipe.top.remove();
             pipe.bottom.remove();
-            pipes = pipes.filter(p => p.top !== pipe.top);
+            pipes.splice(index, 1);
+            return;
         }
 
         // Collision detection
@@ -101,10 +116,9 @@ function gameLoop() {
         let pipeBottomRect = pipe.bottom.getBoundingClientRect();
 
         if (
-            (birdRect.left < pipeTopRect.right &&
-             birdRect.right > pipeTopRect.left &&
-             (birdRect.top < pipeTopRect.bottom || birdRect.bottom > pipeBottomRect.top)) ||
-            birdPosition <= 0 || birdPosition >= 90
+            birdRect.left < pipeTopRect.right &&
+            birdRect.right > pipeTopRect.left &&
+            (birdRect.top < pipeTopRect.bottom || birdRect.bottom > pipeBottomRect.top)
         ) {
             endGame();
             return;
