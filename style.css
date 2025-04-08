@@ -26,6 +26,7 @@ body {
     top: 40vh;
     transition: top 0.1s linear;
     z-index: 10; /* Ensure the bird is above pipes */
+    background-color: #ccc; /* Fallback color if image fails to load */
 }
 
 .message {
